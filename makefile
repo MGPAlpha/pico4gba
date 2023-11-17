@@ -1,3 +1,7 @@
+ifeq ($(strip $(DEVKITARM)),)
+$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM)
+endif
+
 PRODUCT_NAME = picocart
 
 SRC_DIR := src
@@ -32,14 +36,14 @@ ASFLAGS            = -mthumb-interwork
 
 # --- Compiler
 CC                 = $(DEVKITARM)/bin/arm-none-eabi-gcc
-CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -std=c99 -D_ROM=$(ROM_NAME)
+CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -std=c99 -D_ROM=$(ROM_NAME) -I$(DEVKITPRO)/libgba/include
 
 # --- C++ Compiler
 CPP                = $(DEVKITARM)/bin/arm-none-eabi-g++
 CPPFLAGS           = $(MODEL) -O3 -Wall -pedantic -Wextra -D_ROM=$(ROM_NAME)
 # --- Linker
 LD                 = $(DEVKITARM)/bin/arm-none-eabi-gcc
-LDFLAGS            = $(SPECS) $(MODEL) -lm -lstdc++
+LDFLAGS            = $(SPECS) $(MODEL) -lm -lstdc++ -L$(DEVKITPRO)/libgba/lib -lgba
 # --- Object/Executable Packager
 OBJCOPY            = $(DEVKITARM)/bin/arm-none-eabi-objcopy
 OBJCOPYFLAGS       = -O binary

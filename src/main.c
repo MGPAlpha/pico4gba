@@ -1,7 +1,17 @@
+#include <gba_video.h>
+#include <gba_console.h>
+
 int main() {
 
-    (*(unsigned short *)0x4000000) = 3 | (1<<10);
 
-    *((unsigned short *)0x6000000) = 0b0111111111111111;
+    consoleDemoInit();
+
+    // ansi escape sequence to clear screen and home cursor
+	// /x1b[line;columnH
+	iprintf("\x1b[2J");
+
+	// ansi escape sequence to set print co-ordinates
+	// /x1b[line;columnH
+	iprintf("\x1b[10;10HHello World!");
 
 }
