@@ -5,7 +5,7 @@ OBJ_DIR := obj
 BIN_DIR := bin
 LIB_DIR := lib
 
-LIBLUA_A := $(LIB_DIR)/luaARM/liblua.a
+LIBLUA_A := $(LIB_DIR)/z8luaARM/liblua.a
 
 PICO4GBA_A := $(BIN_DIR)/pico4gba.a
 CORE_O := $(OBJ_DIR)/main.o
@@ -74,8 +74,9 @@ clean:
 
 deep-clean: clean
 		@cd $(LIB_DIR)/luaARM && make clean
+		@cd $(LIB_DIR)/z8luaARM && make clean
 
 $(LIBLUA_A):
-		cd $(LIB_DIR)/luaARM && make liblua.a
+		cd $(LIB_DIR)/z8luaARM && make liblua.a
 
 -include $(OBJ:.o=.d)
