@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/devkitpro/libgba/**"
+                "/opt/devkitpro/libgba/**",
+                "lib/z8luaARM/**"
             ],
             "defines": [],
             "compilerPath": "/opt/devkitpro/devkitARM/bin/arm-none-eabi-g++",

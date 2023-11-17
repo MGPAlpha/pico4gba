@@ -1,5 +1,5 @@
 #include <gba_video.h>
-#include "../lib/z8luaARM/lua.h"
+#include <lua.h>
 
 int main() {
 

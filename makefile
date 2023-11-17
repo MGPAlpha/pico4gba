@@ -37,7 +37,7 @@ ASFLAGS            = -mthumb-interwork
 
 # --- Compiler
 CC                 = $(DEVKITARM)/bin/arm-none-eabi-g++
-CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -std=c99 -D_ROM=$(ROM_NAME) -I$(DEVKITPRO)/libgba/include
+CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -std=c99 -D_ROM=$(ROM_NAME) -I$(DEVKITPRO)/libgba/include -Ilib/z8luaARM
 
 # # --- C++ Compiler
 # CPP                = $(DEVKITARM)/bin/arm-none-eabi-g++
