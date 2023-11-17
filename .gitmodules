@@ -1,6 +1,3 @@
-[submodule "lib/luaARM"]
-	path = lib/luaARM
-	url = git@github.com:MGPAlpha/luaARM.git
 [submodule "lib/z8luaARM"]
 	path = lib/z8luaARM
 	url = git@github.com:MGPAlpha/z8luaARM.git
