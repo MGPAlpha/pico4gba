@@ -19,8 +19,9 @@ LIB := $(LIBLUA_A)
 # EXE := $(BIN_DIR)/pico2gba
 # CLI := $(BIN_DIR)/pico2gbacli
 # CORE := $(BIN_DIR)/libpico2gba.a
-SRC := $(wildcard $(SRC_DIR)/*.c)
-OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+CSRC := $(wildcard $(SRC_DIR)/*.c)
+CPPSRC := $(wildcard $(SRC_DIR)/*.cpp)
+OBJ := $(CPPSRC:.cpp=.o) $(CSRC:.c=.o)
 
 ELF_NAME           = $(BIN_DIR)/$(PRODUCT_NAME).elf
 ROM_NAME           = $(BIN_DIR)/$(PRODUCT_NAME).gba
@@ -35,14 +36,14 @@ AS                 = $(DEVKITARM)/bin/arm-none-eabi-as
 ASFLAGS            = -mthumb-interwork
 
 # --- Compiler
-CC                 = $(DEVKITARM)/bin/arm-none-eabi-gcc
+CC                 = $(DEVKITARM)/bin/arm-none-eabi-g++
 CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -std=c99 -D_ROM=$(ROM_NAME) -I$(DEVKITPRO)/libgba/include
 
-# --- C++ Compiler
-CPP                = $(DEVKITARM)/bin/arm-none-eabi-g++
-CPPFLAGS           = $(MODEL) -O3 -Wall -pedantic -Wextra -D_ROM=$(ROM_NAME)
+# # --- C++ Compiler
+# CPP                = $(DEVKITARM)/bin/arm-none-eabi-g++
+# CPPFLAGS           = $(MODEL) -O3 -Wall -pedantic -Wextra -D_ROM=$(ROM_NAME)
 # --- Linker
-LD                 = $(DEVKITARM)/bin/arm-none-eabi-gcc
+LD                 = $(DEVKITARM)/bin/arm-none-eabi-g++
 LDFLAGS            = $(SPECS) $(MODEL) -lm -lstdc++ -L$(DEVKITPRO)/libgba/lib -lgba
 # --- Object/Executable Packager
 OBJCOPY            = $(DEVKITARM)/bin/arm-none-eabi-objcopy
@@ -68,6 +69,9 @@ $(PICO4GBA_A): $(CORE_O) $(LIB) | $(BIN_DIR)
 		$(AR) -rc $@ $?
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+		$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 		$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 $(BIN_DIR) $(OBJ_DIR):

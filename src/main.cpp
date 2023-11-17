@@ -1,0 +1,13 @@
+#include <gba_video.h>
+#include "../lib/z8luaARM/lua.h"
+
+int main() {
+
+	REG_DISPCNT = MODE_3 | BG2_ENABLE;
+
+	MODE3_FB[0][0] = 0b0111111111111111;
+	MODE3_FB[10][0] = 0b0000001111111111;
+	MODE3_FB[10][10] = 0b0111110000011111;
+	MODE3_FB[0][10] = 0b0111111111100000;
+
+}
