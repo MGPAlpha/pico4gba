@@ -11,8 +11,13 @@ LIB_DIR := lib
 
 LIBLUA_A := $(LIB_DIR)/z8luaARM/liblua.a
 
+ROM_O := 
+ifneq ("$(wildcard $(SRC_DIR)/label.cpp)","")
+    ROM_O := $(SRC_DIR)/label.cpp
+endif
+
 PICO4GBA_A := $(BIN_DIR)/pico4gba.a
-CORE_O := $(OBJ_DIR)/main.o
+CORE_O := $(OBJ_DIR)/main.o $(OBJ_DIR)/print.o $(OBJ_DIR)/picographics.o
 # CLI_O := $(OBJ_DIR)/cli.o
 
 LIB := $(LIBLUA_A)
@@ -62,7 +67,7 @@ $(ROM_NAME) : $(ELF_NAME)
 	$(GBAFIX) $(ROM_NAME)
 
 # --- Build .o files into .elf file
-$(ELF_NAME) : $(PICO4GBA_A)
+$(ELF_NAME) : $(PICO4GBA_A) $(ROM_O)
 	$(LD) $^ $(LDFLAGS) -o $@
 
 $(PICO4GBA_A): $(CORE_O) $(LIB) | $(BIN_DIR)
