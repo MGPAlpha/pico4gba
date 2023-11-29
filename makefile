@@ -13,7 +13,10 @@ LIBLUA_A := $(LIB_DIR)/z8luaARM/liblua.a
 
 ROM_O := 
 ifneq ("$(wildcard $(SRC_DIR)/label.cpp)","")
-    ROM_O := $(SRC_DIR)/label.cpp
+    ROM_O += $(OBJ_DIR)/label.o
+endif
+ifneq ("$(wildcard $(SRC_DIR)/code.lua.cpp)","")
+    ROM_O += $(OBJ_DIR)/code.lua.o
 endif
 
 PICO4GBA_A := $(BIN_DIR)/pico4gba.a
@@ -54,6 +57,10 @@ LDFLAGS            = $(SPECS) $(MODEL) -lm -lstdc++ -L$(DEVKITPRO)/libgba/lib -l
 OBJCOPY            = $(DEVKITARM)/bin/arm-none-eabi-objcopy
 OBJCOPYFLAGS       = -O binary
 
+AR                 = $(DEVKITARM)/bin/arm-none-eabi-ar rcu
+
+RANLIB             = $(DEVKITARM)/bin/arm-none-eabi-ranlib
+
 # --- ROM Fixer
 GBAFIX             = gbafix
 
@@ -67,11 +74,12 @@ $(ROM_NAME) : $(ELF_NAME)
 	$(GBAFIX) $(ROM_NAME)
 
 # --- Build .o files into .elf file
-$(ELF_NAME) : $(PICO4GBA_A) $(ROM_O)
+$(ELF_NAME) : $(PICO4GBA_A) $(LIB) $(ROM_O)
 	$(LD) $^ $(LDFLAGS) -o $@
 
-$(PICO4GBA_A): $(CORE_O) $(LIB) | $(BIN_DIR)
-		$(AR) -rc $@ $?
+$(PICO4GBA_A): $(CORE_O) | $(BIN_DIR)
+		$(AR) $@ $?
+		$(RANLIB) $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 		$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
