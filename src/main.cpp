@@ -14,7 +14,7 @@ int main() {
 
 	mgba_open();
 
-	mgba_printf(cartridge.data);
+	cartridge.findSection("lua");
 
 	char buff[256];
 	int error;

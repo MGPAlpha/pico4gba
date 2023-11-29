@@ -1,7 +1,7 @@
-#ifndef CARTRIDGE_H
-#define CARTRIDGE_H
+#ifndef CARTDATA_HPP
+#define CARTDATA_HPP
 
-#include "picodata.hpp"
+#include "cartridge.hpp"
 
 #define CARTDATA drippy_p8
 #define CARTLEN drippy_p8_len
@@ -9,6 +9,6 @@
 extern const char CARTDATA[];
 extern const int CARTLEN;
 
-extern const AbstractPicoData cartridge;
+extern const CartSection cartridge;
 
 #endif

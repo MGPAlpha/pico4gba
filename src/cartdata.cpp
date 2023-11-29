@@ -1,3 +1,3 @@
 #include "cartdata.hpp"
 
-const AbstractPicoData cartridge {CARTDATA, CARTLEN};
+const CartSection cartridge = CartSection("full", CARTDATA, CARTDATA+CARTLEN);
