@@ -2,16 +2,17 @@ ifeq ($(strip $(DEVKITARM)),)
 $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM)
 endif
 
-PRODUCT_NAME = picocart
+CARTRIDGE_NAME = drippy
 
 SRC_DIR := src
+GEN_SRC_DIR := $(SRC_DIR)/generated
 OBJ_DIR := obj
 BIN_DIR := bin
 LIB_DIR := lib
 
 LIBLUA_A := $(LIB_DIR)/z8luaARM/liblua.a
 
-ROM_O := 
+ROM_O := $(OBJ_DIR)/$(CARTRIDGE_NAME).o $(OBJ_DIR)/cartridge.o
 ifneq ("$(wildcard $(SRC_DIR)/label.cpp)","")
     ROM_O += $(OBJ_DIR)/label.o
 endif
@@ -31,8 +32,8 @@ CSRC := $(wildcard $(SRC_DIR)/*.c)
 CPPSRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ := $(CPPSRC:.cpp=.o) $(CSRC:.c=.o)
 
-ELF_NAME           = $(BIN_DIR)/$(PRODUCT_NAME).elf
-ROM_NAME           = $(BIN_DIR)/$(PRODUCT_NAME).gba
+ELF_NAME           = $(BIN_DIR)/$(CARTRIDGE_NAME).elf
+ROM_NAME           = $(BIN_DIR)/$(CARTRIDGE_NAME).gba
 # BIN_NAME           = $(PRODUCT_NAME)
 
 #MODEL              = -mthumb-interwork -mthumb
@@ -87,11 +88,22 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 		$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(BIN_DIR) $(OBJ_DIR):
+$(OBJ_DIR)/%.o: $(GEN_SRC_DIR)/%.c | $(OBJ_DIR)
+		$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(GEN_SRC_DIR)/%.cpp | $(OBJ_DIR)
+		$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+$(GEN_SRC_DIR)/$(CARTRIDGE_NAME).c: $(CARTRIDGE_NAME).p8 | $(GEN_SRC_DIR)
+		xxd -i $? $@
+		sed -i 's/unsigned/const/g' $@
+		sed -i '1s/^/#include "..\/cartridge.hpp"\n\n/' $@
+
+$(BIN_DIR) $(OBJ_DIR) $(GEN_SRC_DIR):
 		mkdir -p $@
 		
 clean:
-		@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+		@$(RM) -rv $(BIN_DIR) $(OBJ_DIR) $(GEN_SRC_DIR)
 
 deep-clean: clean
 		@cd $(LIB_DIR)/luaARM && make clean

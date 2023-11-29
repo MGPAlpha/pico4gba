@@ -1,6 +1,7 @@
 #include <gba_video.h>
 #include "label.hpp"
 #include "code.lua.hpp"
+#include "cartridge.hpp"
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -12,6 +13,8 @@
 int main() {
 
 	mgba_open();
+
+	mgba_printf(cartridge.data);
 
 	char buff[256];
 	int error;
