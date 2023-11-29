@@ -1,7 +1,7 @@
 #include <gba_video.h>
 #include "label.hpp"
 #include "code.lua.hpp"
-#include "cartridge.hpp"
+#include "cartdata.hpp"
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>

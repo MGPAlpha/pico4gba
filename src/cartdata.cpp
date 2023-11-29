@@ -1,3 +1,3 @@
-#include "cartridge.hpp"
+#include "cartdata.hpp"
 
 const AbstractPicoData cartridge {CARTDATA, CARTLEN};

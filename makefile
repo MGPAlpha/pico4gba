@@ -12,7 +12,7 @@ LIB_DIR := lib
 
 LIBLUA_A := $(LIB_DIR)/z8luaARM/liblua.a
 
-ROM_O := $(OBJ_DIR)/$(CARTRIDGE_NAME).o $(OBJ_DIR)/cartridge.o
+ROM_O := $(OBJ_DIR)/$(CARTRIDGE_NAME).o $(OBJ_DIR)/cartdata.o
 ifneq ("$(wildcard $(SRC_DIR)/label.cpp)","")
     ROM_O += $(OBJ_DIR)/label.o
 endif
@@ -97,7 +97,7 @@ $(OBJ_DIR)/%.o: $(GEN_SRC_DIR)/%.cpp | $(OBJ_DIR)
 $(GEN_SRC_DIR)/$(CARTRIDGE_NAME).c: $(CARTRIDGE_NAME).p8 | $(GEN_SRC_DIR)
 		xxd -i $? $@
 		sed -i 's/unsigned/const/g' $@
-		sed -i '1s/^/#include "..\/cartridge.hpp"\n\n/' $@
+		sed -i '1s/^/#include "..\/cartdata.hpp"\n\n/' $@
 
 $(BIN_DIR) $(OBJ_DIR) $(GEN_SRC_DIR):
 		mkdir -p $@
