@@ -13,12 +13,6 @@ LIB_DIR := lib
 LIBLUA_A := $(LIB_DIR)/z8luaARM/liblua.a
 
 ROM_O := $(OBJ_DIR)/main.o $(OBJ_DIR)/print.o $(OBJ_DIR)/picographics.o $(OBJ_DIR)/cartridge.o $(OBJ_DIR)/$(CARTRIDGE_NAME).o $(OBJ_DIR)/cartdata.o
-ifneq ("$(wildcard $(SRC_DIR)/label.cpp)","")
-    ROM_O += $(OBJ_DIR)/label.o
-endif
-ifneq ("$(wildcard $(SRC_DIR)/code.lua.cpp)","")
-    ROM_O += $(OBJ_DIR)/code.lua.o
-endif
 
 PICO4GBA_A := $(BIN_DIR)/pico4gba.a
 # CLI_O := $(OBJ_DIR)/cli.o

@@ -1,6 +1,4 @@
 #include <gba_video.h>
-#include "label.hpp"
-#include "code.lua.hpp"
 #include "cartdata.hpp"
 #include <lua.h>
 #include <lauxlib.h>
@@ -14,9 +12,13 @@ int main() {
 
 	mgba_open();
 
-	cartridge.findSection("lua");
+	ProcessedCartridge cart = ProcessedCartridge(cartridge);
+	AbstractPicoData label = cart.getLabel();
+	AbstractPicoData lua = cart.getLua();
+
 
 	char buff[256];
+
 	int error;
 	lua_State *L = luaL_newstate();   /* opens Lua */
 	
