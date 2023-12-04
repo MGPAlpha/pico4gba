@@ -23,7 +23,7 @@ function _update()
 	
 	-- increase this number for
 	-- extra drippyness
-	for i=1,800 do 
+	for i=1,50 do 
 	
 	-- choose a random pixel
 	local x2 = rnd(128)
