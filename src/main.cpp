@@ -4,6 +4,10 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include <gba_dma.h>
+#include <fpsqrt.h>
+
+#include <gba_affine.h>
 // #include <cstdlib>
 
 #include "print.h"
@@ -23,11 +27,18 @@ void srand(unsigned int seed)
     next = seed;
 }
 
+
+void buildCosTable();
+
+
 int pico_rectFill(lua_State *L);
 int pico_pSet(lua_State *L);
 int pico_pGet(lua_State *L);
 int pico_btn(lua_State *L);
 int pico_rnd(lua_State *L);
+int pico_cls(lua_State *L);
+int pico_time(lua_State *L);
+int pico_cos(lua_State *L);
 
 int pico_rectFill(lua_State *L) {
 	int x0 = lua_tonumber(L, 1);
@@ -105,6 +116,61 @@ int pico_rnd(lua_State *L) {
 	return 1;
 }
 
+int pico_cls(lua_State *L) {
+	// mgba_printf("Clearing screen");
+	volatile int color = 0;
+	DMA3COPY(&color, MODE4_FB, DMA_ENABLE | DMA_DST_INC | DMA32 | DMA_SRC_FIXED | 240*160/4);
+	// mgba_printf("screen cleared");
+
+	return 0;
+}
+
+static int vblankCounter = 0;
+
+int pico_time(lua_State *L) {
+	z8::fix32 time = z8::fix32(static_cast<int32_t>(vblankCounter)) / 60;
+	mgba_printf("Time: %x", time);
+	lua_pushnumber(L, time);
+	return 1;
+}
+
+static t_ObjAffineSource affineTrigSource = {0x0100, 0x5000, 0};
+static t_ObjAffineDest affineTrigDest = {0x0100, 0, 0, 0x0100};	
+
+z8::fix32 cosTable[360];
+
+void buildCosTable() {
+	for (int i = 0; i < 360; i++) {
+		double x = i * (2 * M_PI) / 180;
+		cosTable[i] = std::cos(x);
+	}
+}
+
+int pico_cos(lua_State *L) {
+
+	z8::fix32 ix = lua_tonumber(L, 1);
+
+	int x = (int)ix;
+
+	// lua_pushnumber(L, bios_cos(ix));
+
+	if (x < 0) x = -x;
+	
+	lua_pushnumber(L, cosTable[x % 360]);
+
+	return 1;
+
+}
+
+int pico_sqrt(lua_State *L) {
+	z8::fix32 x = lua_tonumber(L, 1);
+
+	lua_pushnumber(L, sqrt_fx16_16_to_fx16_16(x));
+
+	return 1;
+	
+}
+
 int main() {
 
 	mgba_open();
@@ -154,6 +220,23 @@ int main() {
 	lua_setglobal(L, "btn");
 	lua_pushcfunction(L, pico_rnd);
 	lua_setglobal(L, "rnd");
+	lua_pushcfunction(L, pico_cls);
+	lua_setglobal(L, "cls");
+	lua_pushcfunction(L, pico_time);
+	lua_setglobal(L, "time");
+	lua_pushcfunction(L, pico_time);
+	lua_setglobal(L, "t");
+	lua_pushnil(L);
+	lua_setglobal(L, "cos");
+	lua_pushcfunction(L, pico_cos);
+	lua_setglobal(L, "cos");
+
+	lua_pushnil(L);
+	lua_setglobal(L, "sqrt");
+	lua_pushcfunction(L, pico_sqrt);
+	lua_setglobal(L, "sqrt");
+
+	buildCosTable();
 
 	error = luaL_loadbuffer(L, lua.data, lua.size-1, "user_code");
 
@@ -177,15 +260,16 @@ int main() {
 	// MODE3_FB[0][10] = 0b0111111111100000;
 
 	while(1) {
-		lua_getglobal(L, "_update");
-		error = lua_pcall(L, 0, 0, 0);
-		if (error) {
-			mgba_printf("%s", lua_tostring(L, -1));
-          lua_pop(L, 1);  /* pop error message from the stack */
-		}
+		// lua_getglobal(L, "_update");
+		// error = lua_pcall(L, 0, 0, 0);
+		// if (error) {
+		// 	mgba_printf("%s", lua_tostring(L, -1));
+        //   lua_pop(L, 1);  /* pop error message from the stack */
+		// }
 
 		while (REG_VCOUNT >= 160);
 		while (REG_VCOUNT < 160);
+		vblankCounter++;
 
 		lua_getglobal(L, "_draw");
 		error = lua_pcall(L, 0, 0, 0);

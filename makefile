@@ -2,7 +2,7 @@ ifeq ($(strip $(DEVKITARM)),)
 $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM)
 endif
 
-CARTRIDGE_NAME = drippy
+CARTRIDGE_NAME = waves
 
 SRC_DIR := src
 GEN_SRC_DIR := $(SRC_DIR)/generated
@@ -39,7 +39,7 @@ ASFLAGS            = -mthumb-interwork
 
 # --- Compiler
 CC                 = $(DEVKITARM)/bin/arm-none-eabi-g++
-CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -D_ROM=$(ROM_NAME) -I$(DEVKITPRO)/libgba/include -Ilib/z8luaARM
+CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -D_ROM=$(ROM_NAME) -I$(DEVKITPRO)/libgba/include -Ilib/z8luaARM -Ilib/z8luaARM/fpsqrt
 
 # # --- C++ Compiler
 # CPP                = $(DEVKITARM)/bin/arm-none-eabi-g++

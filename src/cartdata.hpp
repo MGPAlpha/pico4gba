@@ -3,8 +3,8 @@
 
 #include "cartridge.hpp"
 
-#define CARTDATA drippy_p8
-#define CARTLEN drippy_p8_len
+#define CARTDATA waves_p8
+#define CARTLEN waves_p8_len
 
 extern const char CARTDATA[];
 extern const int CARTLEN;
