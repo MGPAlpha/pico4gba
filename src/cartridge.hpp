@@ -1,7 +1,10 @@
 #ifndef CARTRIDGE_HPP
 #define CARTRIDGE_HPP
 
-#include "picodata.hpp"
+struct AbstractPicoData {
+    const char* data;
+    int size;
+};
 
 char hexDigitToData(char digit);
 

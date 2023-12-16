@@ -1,7 +1,6 @@
 #include "cartridge.hpp"
 #include <cstdio>
 #include <cstring>
-#include "picodata.hpp"
 #include "print.h"
 
 char hexDigitToData(char digit) {
