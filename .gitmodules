@@ -1,3 +1,6 @@
 [submodule "lib/z8luaARM"]
 	path = lib/z8luaARM
 	url = git@github.com:MGPAlpha/z8luaARM.git
+[submodule "lib/fpsqrt"]
+	path = lib/fpsqrt
+	url = git@github.com:chmike/fpsqrt.git

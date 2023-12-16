@@ -17,7 +17,9 @@ ROM_O := $(OBJ_DIR)/main.o $(OBJ_DIR)/print.o $(OBJ_DIR)/picographics.o $(OBJ_DI
 PICO4GBA_A := $(BIN_DIR)/pico4gba.a
 # CLI_O := $(OBJ_DIR)/cli.o
 
-LIB := $(LIBLUA_A)
+FPSQRT_O := $(LIB_DIR)/fpsqrt/fpsqrt.o
+
+LIB := $(LIBLUA_A) $(FPSQRT_O)
 # EXE := $(BIN_DIR)/pico2gba
 # CLI := $(BIN_DIR)/pico2gbacli
 # CORE := $(BIN_DIR)/libpico2gba.a
@@ -39,7 +41,7 @@ ASFLAGS            = -mthumb-interwork
 
 # --- Compiler
 CC                 = $(DEVKITARM)/bin/arm-none-eabi-g++
-CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -D_ROM=$(ROM_NAME) -I$(DEVKITPRO)/libgba/include -Ilib/z8luaARM -Ilib/z8luaARM/fpsqrt
+CFLAGS             = $(MODEL) -O3 -Wall -pedantic -Wextra -D_ROM=$(ROM_NAME) -I$(DEVKITPRO)/libgba/include -Ilib/z8luaARM -Ilib/fpsqrt
 
 # # --- C++ Compiler
 # CPP                = $(DEVKITARM)/bin/arm-none-eabi-g++
@@ -100,5 +102,8 @@ deep-clean: clean
 
 $(LIBLUA_A):
 		cd $(LIB_DIR)/z8luaARM && make liblua.a
+
+$(FPSQRT_O): $(LIB_DIR)/fpsqrt/fpsqrt.c
+		$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 -include $(OBJ:.o=.d)
