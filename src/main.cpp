@@ -114,6 +114,8 @@ int main() {
 			// 	lua_pop(L, 1);  /* pop error message from the stack */
 			// }
 		}
+
+		drawPicoScreen((PICOSCREEN_LINE*)(PicoEmulator::getInstance()->getMemory() + 0x6000), 0, 0);
 	}
 
 }

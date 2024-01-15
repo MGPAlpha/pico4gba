@@ -5,6 +5,7 @@
 #include <gba_dma.h>
 #include <fpsqrt.h>
 #include "picographics.hpp"
+#include "picoemu.hpp"
 
 static unsigned long int next = 1;
 
@@ -38,25 +39,34 @@ int pico_rectFill(lua_State *L) {
 }
 
 int pico_pSet(lua_State *L) {
+	unsigned char* memory = PicoEmulator::getInstance()->getMemory();
+	
+	PICOSCREEN_LINE* videoMemory = (PICOSCREEN_LINE*)(memory + 0x6000);
+
 	int x = lua_tonumber(L, 1);
 	int y = lua_tonumber(L, 2);
 	int color = lua_tonumber(L, 3);
 
-	short initial = MODE4_FB[y][x/2];
-	if (x%2 == 0) initial = (initial & 0xff00) | color;
-	else initial = (initial & 0x00ff) | (color << 8);
-	MODE4_FB[y][x/2] = initial;
+	uint8_t initial = videoMemory[y][x/2];
+	if (x%2 == 0) initial = (initial & 0xf0) | color;
+	else initial = (initial & 0x0f) | (color << 4);
+	videoMemory[y][x/2] = initial;
 	return 0;
 }
 
 int pico_pGet(lua_State *L) {
+
+	unsigned char* memory = PicoEmulator::getInstance()->getMemory();
+	
+	PICOSCREEN_LINE* videoMemory = (PICOSCREEN_LINE*)(memory + 0x6000);
+	
 	int x = lua_tonumber(L, 1);
 	int y = lua_tonumber(L, 2);
 	
-	short initial = MODE4_FB[y][x/2];
+	short initial = videoMemory[y][x/2];
 	int res;
-	if (x%2 == 0) res = (initial & 0x000f);
-	else res = (initial & 0x0f00) >> 8;
+	if (x%2 == 0) res = (initial & 0x0f);
+	else res = (initial & 0xf0) >> 4;
 	lua_pushinteger(L, res);
 	return 1;
 }
@@ -98,7 +108,7 @@ int pico_rnd(lua_State *L) {
 int pico_cls(lua_State *L) {
 	// mgba_printf("Clearing screen");
 	volatile int color = 0;
-	DMA3COPY(&color, MODE4_FB, DMA_ENABLE | DMA_DST_INC | DMA32 | DMA_SRC_FIXED | 240*160/4);
+	DMA3COPY(&color, PicoEmulator::getInstance()->getMemory() + 0x6000, DMA_ENABLE | DMA_DST_INC | DMA32 | DMA_SRC_FIXED | 128*128/2);
 	// mgba_printf("screen cleared");
 
 	return 0;
