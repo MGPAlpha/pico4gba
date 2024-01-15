@@ -130,6 +130,21 @@ ProcessedCartridge::ProcessedCartridge(const CartSection s) {
     label = s.findSection("label").processAsLabel();
 }
 
+void ProcessedCartridge::deleteSections() {
+    if (lua.data) {
+        delete lua.data;
+        lua.data = nullptr;
+    }
+    if (gfx.data) {
+        delete gfx.data;
+        gfx.data = nullptr;
+    }
+    if (label.data) {
+        delete label.data;
+        label.data = nullptr;
+    }
+}
+
 const AbstractPicoData ProcessedCartridge::getLua() const {
     return lua;
 }

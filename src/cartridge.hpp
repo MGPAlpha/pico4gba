@@ -38,6 +38,7 @@ class CartReader {
 class ProcessedCartridge {
     public:
         ProcessedCartridge(const CartSection s);
+        void deleteSections();
         const AbstractPicoData getLua() const;
         const AbstractPicoData getGfx() const;
         const AbstractPicoData getLabel() const;

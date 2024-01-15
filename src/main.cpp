@@ -7,6 +7,7 @@
 #include <gba_dma.h>
 #include <fpsqrt.h>
 #include "picolib.hpp"
+#include "picoemu.hpp"
 
 #include <gba_affine.h>
 // #include <cstdlib>
@@ -49,21 +50,19 @@ int main() {
 	char buff[256];
 
 	int error;
-	lua_State *L = luaL_newstate();   /* opens Lua */
-	
-	mgba_printf("%x", L);
-	mgba_printf("Lib opener address: %x", luaopen_base);
 
-	luaL_openlibs(L);
-	
-	luaopen_picolib(L);
+	PicoEmulator* emu = new PicoEmulator();
 
-	error = luaL_loadbuffer(L, lua.data, lua.size-1, "user_code");
+	lua_State *L = emu->getLua();
 
-	if (error) {
-		mgba_printf("%s", lua_tostring(L, -1));
-          lua_pop(L, 1);  /* pop error message from the stack */
-	}
+	emu->loadCartridge(cartridge);
+
+	// error = luaL_loadbuffer(L, lua.data, lua.size-1, "user_code");
+
+	// if (error) {
+	// 	mgba_printf("%s", lua_tostring(L, -1));
+    //       lua_pop(L, 1);  /* pop error message from the stack */
+	// }
 
 	error = lua_pcall(L, 0, 0, 0);
 
@@ -94,11 +93,12 @@ int main() {
 	while(1) {
 		if (hasUpdate) {
 			lua_getglobal(L, "_update");
-			error = lua_pcall(L, 0, 0, 0);
-			if (error) {
-				mgba_printf("%s", lua_tostring(L, -1));
-				lua_pop(L, 1);  /* pop error message from the stack */
-			}
+			// error = lua_pcall(L, 0, 0, 0);
+			lua_call(L, 0, 0);
+			// if (error) {
+			// 	mgba_printf("%s", lua_tostring(L, -1));
+			// 	lua_pop(L, 1);  /* pop error message from the stack */
+			// }
 		}
 
 		while (REG_VCOUNT >= 160);
@@ -107,11 +107,12 @@ int main() {
 
 		if (hasDraw) {
 			lua_getglobal(L, "_draw");
-			error = lua_pcall(L, 0, 0, 0);
-			if (error) {
-				mgba_printf("%s", lua_tostring(L, -1));
-				lua_pop(L, 1);  /* pop error message from the stack */
-			}
+			// error = lua_pcall(L, 0, 0, 0);
+			lua_call(L, 0, 0);
+			// if (error) {
+			// 	mgba_printf("%s", lua_tostring(L, -1));
+			// 	lua_pop(L, 1);  /* pop error message from the stack */
+			// }
 		}
 	}
 

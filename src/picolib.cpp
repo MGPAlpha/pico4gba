@@ -20,18 +20,6 @@ void srand(unsigned int seed)
 }
 
 
-void buildCosTable();
-
-
-int pico_rectFill(lua_State *L);
-int pico_pSet(lua_State *L);
-int pico_pGet(lua_State *L);
-int pico_btn(lua_State *L);
-int pico_rnd(lua_State *L);
-int pico_cls(lua_State *L);
-int pico_time(lua_State *L);
-int pico_cos(lua_State *L);
-
 int pico_rectFill(lua_State *L) {
 	int x0 = lua_tonumber(L, 1);
 	int y0 = lua_tonumber(L, 2);
@@ -135,7 +123,7 @@ void buildCosTable() {
 
 int pico_cos(lua_State *L) {
 
-	z8::fix32 ix = lua_tonumber(L, 1);
+	z8::fix32 ix = lua_tointeger(L, 1);
 
 	int x = (int)ix;
 
